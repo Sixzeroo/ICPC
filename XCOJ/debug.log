@@ -1,0 +1,5 @@
+[0923/080729:ERROR:block_files.cc(477)] Failed to open C:\Users\17907\AppData\Local\Youdao\YNote\data_0
+[0923/080729:ERROR:cache_util_win.cc(20)] Unable to move the cache: 5
+[0923/080729:ERROR:cache_util.cc(132)] Unable to move cache folder C:\Users\17907\AppData\Local\Youdao\YNote to C:\Users\17907\AppData\Local\Youdao\old_YNote_000
+[0923/080729:ERROR:cache_creator.cc(127)] Unable to create cache
+[0923/080732:ERROR:block_files.cc(477)] Failed to open C:\Users\17907\AppData\Local\Youdao\YNote\GPUCache\data_0
