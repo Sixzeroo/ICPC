@@ -1,87 +1,72 @@
-#include <iostream>
 #include<cstdio>
 #include<cstring>
-#include<queue>
-#include<cstring>
-#include<algorithm>
+#include<cstdlib>
 #include<cmath>
-#include<utility>
-#include<map>
-#include<vector>
-#include<iterator>
+#include<ctime>
+#include<iostream>
+#include<queue>
 #include<set>
-#include<sstream>
-
+#include<algorithm>
+#include<map>
 using namespace std;
 
-#define SIZE 305
-#define INF 0x3f3f3f3f
-#define in(a) scanf("%d",&a)
 typedef long long ll;
-#define MAX_V 50005
-#define MAX_E 10005
+#define INF 0x3f3f3f3f
+const int mod=1e9+7;
+const int maxn=3005;
+const int maxm=10005; 
 
-ll dp[25][3];
-int digit[25];
+int digit[10],dp[10][2],visit[10][2];   //digitå­˜å‚¨æ•°å­—ï¼Œdpå­˜å‚¨çŠ¶æ€çš„è®°å¿†åŒ–æ•°ç»„ï¼Œvisitè®¿é—®æ ‡è®°
 
-ll dfs(int pos,int status,int limit)
+int dfs(int l,bool six,bool jud)
 {
-    if(pos<=0)
-        return status!=2;
-    if(!limit && dp[pos][status]!=-1)   //¼ÇÂ¼Ö®Ç°µÄ½á¹û Ö±½Ó·µ»Ø
-        return dp[pos][status];
-    ll ans=0;
-    int End = limit?digit[pos]:9;   //È·¶¨ÉÏÏŞ
-    for(int i=0;i <= End; i++)
-    {
-        int nstatus = status;   //ÒªÉèÖÃ³õÊ¼Öµ
-        if(i == 4)
-            nstatus = 2;
-        else if(status==0 && i==6)
-            nstatus = 1;
-        else if(status==1 && i!=2 && i!=6)
-            nstatus = 0;
-        else if(status==1 && i==2)
-            nstatus = 2;
-        ans+=dfs(pos-1,nstatus,limit && i==End);
-    }
-    if(!limit)
-        dp[pos][status]=ans;
-    return ans;
+	if(l==0) return 1;    //æœç´¢ç»“æŸçš„çŠ¶æ€
+	if(!jud && visit[l][six]) return dp[l][six];
+	int len=jud ? digit[l]:9;
+	int tmp=0;
+	for(int i=0;i<=len;i++)
+	{
+		if(i==4 || (six && i==2)) continue;
+		tmp+=dfs(l-1,i==6,jud&&(i==len));
+	}
+	if(!jud)
+	{
+		visit[l][six]=1;
+		dp[l][six]=tmp;
+	}
+	return tmp;
 }
 
-int cal(ll x)
+int fun(int k)
 {
-    int cnt = 0;
-    while(x)
-    {
-        digit[++cnt] = x%10;
-        x/=10;
-    }
-    digit[cnt+1] = 0;
-    return cnt;
+	memset(dp,0,sizeof(dp));
+	memset(visit,0,sizeof(visit));
+	int pos=0;
+	while(k)
+	{
+		digit[++pos]=k%10;
+		k/=10;
+	}
+	return dfs(pos,false,true);
 }
 
-int solve()
-{
-    ll n,m;
-    memset(dp,-1,sizeof(dp));
-    while(scanf("%lld%lld",&n,&m)!=EOF)
-    {
-        if(n==0&&m==0)
-            break;    //½áÊø±êÖ¾
-        int lenn=cal(n-1);
-        ll resn=dfs(lenn,0,1);
 
-        int lenm=cal(m);
-        ll resm=dfs(lenm,0,1);
-        printf("%ld",resm-resn);
-    }
+void solve()
+{
+	int n,m;
+	while(scanf("%d %d",&n,&m)!=EOF)
+	{
+		if(m==0 && n==0) break;
+		int ans=fun(m)-fun(n-1);
+		printf("%d\n",ans);
+	}
 }
+
 
 int main()
 {
-    freopen("input.txt","r",stdin);
-    solve();
-    return 0;
+	freopen("input.txt","r",stdin);
+	solve();
+	return 0;
 }
+
