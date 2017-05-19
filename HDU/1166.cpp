@@ -1,127 +1,83 @@
-#include <iostream>
 #include<cstdio>
 #include<cstring>
-#include<queue>
-#include<cstring>
-#include<algorithm>
+#include<cstdlib>
 #include<cmath>
-#include<utility>
-#include<map>
-#include<vector>
-#include<iterator>
+#include<ctime>
+#include<iostream>
+#include<queue>
 #include<set>
-#include<sstream>
-
+#include<algorithm>
+#include<map>
 using namespace std;
 
-#define INF 0x3f3f3f3f
-#define in(a) scanf("%d",&a)
-#define out(a) printf("%d",a)
 typedef long long ll;
+#define INF 0x3f3f3f3f
+const int MOD=1e9;
+const int maxn=50005;
+const int maxm=10005; 
 
-#define SIZE 50005
-#define lson l,m,rt<<1
-#define rson m+1,r,rt<<1|1
+int N,c[maxn];    //树状数组
 
-//�߶���������
-int SUM[SIZE<<2];
-
-void pushup(int rt)
+int lowbit(int i)
 {
-    SUM[rt]=SUM[rt<<1]+SUM[rt<<1|1];
+	return i&(-i);   //得到最高位1以后的剩下的数的二进制数
 }
 
-void build(int l,int r,int rt)
+//修改节点操作（添加值）
+void add(int i,int value)  //i表示序号
 {
-    if(l==r)
-    {
-        scanf("%d",&SUM[rt]);
-        return;
-    }
-    int m=(l+r)>>1;
-    build(lson);
-    build(rson);
-    pushup(rt);
+	while(i<=N)
+	{
+		c[i]+=value;
+		i+=lowbit(i);
+	}
 }
 
-void update1(int p,int tem,int l,int r,int rt)
+//求和操作
+int sum(int i)
 {
-    if(l==r)
-    {
-        SUM[rt]+=tem;
-        return;
-    }
-    int m=(l+r)>>1;
-    if(p<=m) update1(p,tem,lson);
-    else update1(p,tem,rson);
-    pushup(rt);
-}
-
-void update2(int p,int tem,int l,int r,int rt)
-{
-    if(l==r)
-    {
-        SUM[rt]-=tem;
-        return;
-    }
-    int m=(l+r)>>1;
-    if(p<=m) update2(p,tem,lson);
-    else update2(p,tem,rson);
-    pushup(rt);
-}
-
-int query(int L,int R,int l,int r,int rt)
-{
-    if(L<=l && r<=R)
-    {
-        return SUM[rt];
-    }
-    int m=(l+r)>>1;
-    int ret=0;
-    if(L<=m) ret+=query(L,R,lson);
-    if(m<R) ret+=query(L,R,rson);
-    return ret;
+	int sum=0;
+	while(i>0)
+	{
+		sum+=c[i];
+		i-=lowbit(i);
+	}
+	return sum;
 }
 
 void solve()
 {
-    int t,n,x,y;
-    string ch;
-    scanf("%d",&t);
-    for(int id=1;id<=t;id++)
-    {
-        printf("Case %d:\n",id);
-        in(n);
-        build(1,n,1);
-        while(cin>>ch)
-        {
-            if(ch=="End")
-                break;
-            else if(ch=="Add")
-            {
-                in(x);
-                in(y);
-                update1(x,y,1,n,1);
-            }
-            else if(ch=="Sub")
-            {
-                in(x);
-                in(y);
-                update2(x,y,1,n,1);
-            }
-            else
-            {
-                in(x);
-                in(y);
-                printf("%d\n",query(x,y,1,n,1));
-            }
-        }
-    }
+	int t;
+	scanf("%d",&t);
+	for(int id=1;id<=t;id++)
+	{
+		printf("Case %d:\n",id);
+		memset(c,0,sizeof(c));
+		scanf("%d",&N);
+		int d;
+		for(int i=1;i<=N;i++)
+		{
+			scanf("%d",&d);
+			add(i,d);
+		}
+		string s;
+		int x,y;
+		while(cin>>s && s!="End")
+		{
+			scanf("%d %d",&x,&y);
+			if(s=="Query") printf("%d\n",sum(y)-sum(x-1));
+			else if(s=="Add") add(x,y);
+			else if(s=="Sub") add(x,-y);
+		}
+
+	}
 }
+
+
 
 int main()
 {
-    freopen("input.txt","r",stdin);
-    solve();
-    return 0;
+	freopen("input.txt","r",stdin);
+	solve();
+	return 0;
 }
